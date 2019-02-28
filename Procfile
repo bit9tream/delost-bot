@@ -1,1 +1,1 @@
-/home/bit6user/doc/src/py/delost/Procfile
+bot: python3 delost.py
