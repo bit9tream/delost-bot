@@ -6,7 +6,10 @@ TOKEN = '583885451:AAFNXpsPeAbt8dNLwwuKoYwhSdopzb8KVSY'
 bot = telebot.TeleBot(TOKEN)
 ADDSTICK = False
 ADMINS = []
-CREATOR = '564932461'
+ADDADMIN = False
+REQV_USERS = ['test']
+CREATOR_ID = '564932461'
+CREATOR_NAME = 'bit6tream'
 STICKERS = ['CAADAgADHwADa-18CnJ6NnqU84-1Ag',
             'CAADAgADyQEAAtvnDQAB19KJ0eCiO5cC',
             'CAADAgADVQAD6kb8ECvohJYCchf_Ag',
@@ -35,9 +38,27 @@ def command_hello(message: Message):
 
 #TODO
 @bot.message_handler(commands=['requestadmin'])
+def command_requestadmin(message: Message):
+    if str(message.from_user.id) == CREATOR_ID:
+        bot.send_message(message.chat.id, 'Ты меня создал\nКакой /requestadmin ?')
+    else:
+        bot.send_message(message.chat.id, 'Ожидайте одобрения от одного из управленцев...')
+        bot.send_message(CREATOR, f'Заявка в админы от @{message.from_user.username}  \nДля одобрения отправь /setadmin')
+        REQV_USERS.append(message.from_user.username)
+
+@bot.message_handler(commands=['setadmin'])
 def command_setadmin(message: Message):
-    bot.send_message(message.chat.id, 'Ожидайте одобрения от одного из управленцев...')
-    bot.send_message(CREATOR, f'Заявка в админы от {message.from_user.username}  \nДля одобрения отправь /setadmin')
+    global ADDADMIN
+    if str(message.from_user.id) == CREATOR_ID:
+        USER_LIST = ''
+        for i in range(0,len(REQV_USERS)):
+            USER_LIST += str(REQV_USERS[i]) + '\n'
+        bot.send_message(message.chat.id, f'Выбери username из списка:\n{USER_LIST}')
+        ADDADMIN = True
+        return
+       
+
+
 
 @bot.message_handler(commands=['adminlist'])
 def command_adminlist(message: Message):
@@ -71,8 +92,17 @@ def command_stickbomb(message: Message):
 
 @bot.message_handler(content_types=['text'])
 def echo_digits(message: Message):
+    global ADDADMIN
     if message.from_user.id not in USERS:
         USERS.add(message.from_user.id)
+    if str(message.from_user.id) == CREATOR_ID:
+         if ADDADMIN == True:
+            if str(message.text) in REQV_USERS:
+                ADMINS.append(str(message.text))
+                bot.send_message(message.chat.id, 'Пользователь добавлен в администраторы')
+                ADDADMIN = False
+            else:
+                bot.send_message(message.chat.id, 'Заявки от такого пользователя не приходило')
     print(message)
 
 @bot.message_handler(content_types=['sticker'])
