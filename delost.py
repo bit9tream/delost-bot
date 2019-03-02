@@ -1,6 +1,5 @@
 import telebot
 import random
-import pickle
 from telebot.types import Message
 
 TOKEN = '583885451:AAFNXpsPeAbt8dNLwwuKoYwhSdopzb8KVSY'
