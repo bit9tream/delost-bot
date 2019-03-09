@@ -2,7 +2,7 @@ import telebot
 import random
 from telebot.types import Message
 
-TOKEN = '583885451:AAFNXpsPeAbt8dNLwwuKoYwhSdopzb8KVSY'
+TOKEN = '#tokeN#'
 bot = telebot.TeleBot(TOKEN)
 ADDSTICK = False
 ADMINS = []
